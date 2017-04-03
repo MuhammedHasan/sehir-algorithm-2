@@ -1,0 +1,90 @@
+Q.1
+
+Pseudo-code
+
+bag_switch:
+  if outcomes[0] in second bag:
+      return 0
+
+  create n = 0 and step = 1
+
+  increase step by step *=2 while not outcomes[n + step] in second bag
+
+  loop:
+    if outcomes[n] in second bag  and outcomes[n - 1] in first bag
+      return n
+    increase n by step if outcomes[n] in first bag else  decrease by step
+
+    if step equal 0:
+          return None
+    decrease step by /= 2
+
+Complexity : O(log n) because
+step size change until find second bag by power of 2 then it follow binary search
+
+Q.2
+
+Pseudo-code
+
+
+half_partition_left(nums, r_min):
+    if length of nums  equal 1 then return nums[0]
+
+    divide list into two part named left_nums, right_nums and get min max of each part
+
+    if left_max <= min(r_min, right_min) and is left_nums sorted then
+        return half_partition_left(right_nums, r_min)
+    else then
+        return half_partition_left(left_nums, min(r_min, right_min))
+
+def half_partition_right(nums, r_max):
+    if length of nums  equal 1 then return nums[0]
+
+    divide list into two part named left_nums, right_nums and get min max of each part
+
+    if right_min >= max(left_max, r_max) and is right_nums sorted then
+        return half_partition_right(left_nums, r_max)
+    else then
+        return half_partition_right(right_nums, max(left_max, r_max))
+
+
+def partition_list(nums):
+
+    if nums are not incorrect format convert them to enumerate(nums) easy process
+
+    if len(nums) < 2 or is nums sorted then return (None, None)
+
+    divide list into two part named left_nums, right_nums and get min max of each part
+
+    if left_max <= right_min then
+        if is left_nums sorted then
+            return partition_list(right_nums)
+        elif is right_nums sorted then
+            return partition_list(left_nums)
+    return half_partition_left(left_nums, right_min)[0], half_partition_right(right_nums, left_max)[0]
+
+Complexity : O(n) because
+for given T(n) = a  T([n/b]) + O(n^d) => if d > log_b(a) then O(n^d)
+where
+a = 1 and b = 2 and d = 1 for each function above thus
+T(n) = O(n)
+
+Q.3
+
+
+number_of_paths(G, start, end):
+
+    if graph is not in required format then convert it into dictionary with key as node and value as neighbors
+
+    if start equals end:
+        return 1
+
+    return sum of number_of_paths(G, node, end) for each node in G[start]
+
+Complexity : O(n^n) because
+it start with first node and in worst case has n-1 child
+because it is acyclic graph child with bigger child has n-2 child
+
+n-1 ( n-2 ( n-3 ...)) * (n-3 ( n-4 * ...)) * (n-4 (n-5 * ... )) * ( 2 * (1))
+
+that is equal O(n^n) and that is bad algorithm but question do not say about efficiency of algorithm
