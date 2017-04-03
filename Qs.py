@@ -1,5 +1,34 @@
+from collections import defaultdict
 
 # Q.1
+
+
+def bag_switch(outcomes):
+
+    fb = set(['B', 'Y', 'G'])
+    sb = set(['W', 'R', 'O'])
+
+    if outcomes[0] in sb:
+        return 0
+
+    n, step = 0, 1
+
+    try:
+        while not outcomes[n + step] in sb:
+            step *= 2
+    except:
+        step /= 2
+
+    while True:
+        try:
+            if outcomes[n] in sb and outcomes[n - 1] in fb:
+                return n
+            n += step if outcomes[n] in fb else -step
+        except:
+            n -= step
+        if step == 0:
+            return
+        step /= 2
 
 
 # Q.2
@@ -66,59 +95,18 @@ def partition_list(nums):
     return half_partition_left(left_nums, right_min)[0], \
         half_partition_right(right_nums, left_max)[0]
 
-    # return half_partition_left(left_nums, right_min),
-    # half_partition_right(right_nums, left_max)
 
 # Q.3
-import collections import defaultdict
-
-
-def build_graph(edges):
-    graph = defaultdict(list)
-
-    for s, t in edges:
-        graph[s].append(t)
-
-    return graph
-
-
-def visit_nodes(graph, node, visits=None):
-    visits = visits or dict()
-
 
 def number_of_paths(G, start, end):
-    graph = build_graph(G)
 
-    for node in graph:
+    if type(G) != defaultdict:
+        graph = defaultdict(list)
+        for s, t in G:
+            graph[s].append(t)
+        G = graph
 
+    if start == end:
+        return 1
 
-if __name__ == '__main__':
-
-    # import timeit
-    # import random
-    # import builtins
-    # import matplotlib.pyplot as plt
-
-    # numbers = [1, 2, 4, 6, 8, 10, 13, 15, 11, 9, 12, 13, 15, 17, 20, 25]
-    # numbers = [1, 2, 4, 6, 8, 10, 13, 15, 11, 15, 17, 20, 25]
-    # n1, n2, left_max, right_min = list_divider(list(enumerate(numbers)))
-    #
-    # print(half_partition_left(n1, right_min))
-    # print(half_partition_right(n2, left_max))
-
-    # print(partition_list(numbers))
-    #
-    # builtins.__dict__.update(locals())
-    #
-    # running_times = list()
-    #
-    # for i in range(1000, 10000, 100):
-    #     l = list(enumerate(sorted(random.sample(range(10000), i)) +
-    #                        random.sample(range(10000), i)))
-    #     running_times.append(timeit.timeit(
-    #         'half_partition_left(%s, %d)' % (str(l), random.randint(0, 10000)),
-    #         number=100))
-    #
-    #
-    # plt.plot(running_times)
-    # plt.show()
+    return sum(number_of_paths(G, node, end) for node in G[start])
