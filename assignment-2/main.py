@@ -153,9 +153,10 @@ class Graph(dict):
             t_cost = source_dists[c] + destination_dists[c]
             if cost > t_cost:
                 cost = t_cost
-                path = list(reversed(self.prev_to_path(source_prev, c)))
-                path.pop()
-                path.extend(self.prev_to_path(destination_prev, c))
+                optimal_c = c
+        path = list(reversed(self.prev_to_path(source_prev, optimal_c)))
+        path.pop()
+        path.extend(self.prev_to_path(destination_prev, optimal_c))
         return cost, path
 
 
@@ -190,10 +191,3 @@ def find_shortest_path_with_checkpoint(G):
     print('Minimum cost:', dist)
     print('Steps:', len(path) - 1)
     print('Path:', path)
-
-G = [[0, 6, "Check", 4, 9, 3],
-     [5, 7, 4, 6, "Check", 3],
-     [3, "Check", 6, 5, 8, 4],
-     [10, 2, 5, 4, 3, 0]]
-
-find_shortest_path_with_checkpoint(G)
