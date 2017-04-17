@@ -133,6 +133,67 @@ class Graph(dict):
     def from_negative_graph(grid_list):
         return Graph.from_grid(grid_list, directions='right-down')
 
-    def add_check_point(self):
-        # think about cost
-        pass
+    @staticmethod
+    def from_checkpoint_graph(grid_list):
+        checkpoints = set()
+        for i, row in enumerate(grid_list):
+            for j, cell in enumerate(row):
+                if cell == 'Check':
+                    grid_list[i][j] = 0
+                    checkpoints.add((i, j))
+        graph = Graph.from_grid(grid_list)
+        graph._checkpoints = checkpoints
+        return graph
+
+    def find_sortest_path_for_checkpoints(self, from_node, to_node):
+        source_dists, source_prev = self.dijkstra(from_node)
+        destination_dists, destination_prev = self.dijkstra(to_node)
+        cost = float('inf')
+        for c in self._checkpoints:
+            t_cost = source_dists[c] + destination_dists[c]
+            if cost > t_cost:
+                cost = t_cost
+                path = list(reversed(self.prev_to_path(source_prev, c)))
+                path.pop()
+                path.extend(self.prev_to_path(destination_prev, c))
+        return cost, path
+
+
+def start_end(G):
+    to_node = len(G) - 1, len(G[0]) - 1
+    from_node = (0, 0)
+    return from_node, to_node
+
+
+def find_shortest_path(G):
+    from_node, to_node = start_end(G)
+    graph = Graph.from_grid(G)
+    dist, path = graph.find_sortest_path(from_node, to_node)
+    print('Minimum cost:', dist)
+    print('Steps:', len(path) - 1)
+    print('Path:', path)
+
+
+def find_shortest_path_with_negative_costs(G):
+    from_node, to_node = start_end(G)
+    graph = Graph.from_negative_graph(G)
+    dist, path = graph.find_sortest_path_for_neg(from_node, to_node)
+    print('Minimum cost:', dist)
+    print('Steps:', len(path) - 1)
+    print('Path:', path)
+
+
+def find_shortest_path_with_checkpoint(G):
+    from_node, to_node = start_end(G)
+    graph = Graph.from_checkpoint_graph(G)
+    dist, path = graph.find_sortest_path_for_checkpoints(from_node, to_node)
+    print('Minimum cost:', dist)
+    print('Steps:', len(path) - 1)
+    print('Path:', path)
+
+G = [[0, 6, "Check", 4, 9, 3],
+     [5, 7, 4, 6, "Check", 3],
+     [3, "Check", 6, 5, 8, 4],
+     [10, 2, 5, 4, 3, 0]]
+
+find_shortest_path_with_checkpoint(G)
